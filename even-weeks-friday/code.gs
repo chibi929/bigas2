@@ -2,14 +2,15 @@ var DAY_OF_WEEK_STR = ['日', '月', '火', '水', '木', '金', '土'];
 var TEMPLATE_FILE_ID = '${ここにコピー元ファイルIDを入れる}';
 var FILE_PREFIX = '${ここにファイル名のプレフィックスを入れる}';
 
-function myFunction() {}
-
-function createNextReport() {
+function myFunction() {
   var date = new Date();
   if (!isEvenWeeksFriday(date)) {
     return;
   }
+  createNextReport(date);
+}
 
+function createNextReport(date) {
   do {
     date.setDate(date.getDate() + 7);
   } while (!isEvenWeeksFriday(date));
