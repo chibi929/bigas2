@@ -1,29 +1,29 @@
-var DAY_OF_WEEK_STR = ['日', '月', '火', '水', '木', '金', '土'];
-var TEMPLATE_FILE_ID = '${ここにコピー元ファイルIDを入れる}';
-var FILE_PREFIX = '${ここにファイル名のプレフィックスを入れる}';
+const DAY_OF_WEEK_STR = ['日', '月', '火', '水', '木', '金', '土'];
+const TEMPLATE_FILE_ID = '${ここにコピー元ファイルIDを入れる}';
+const FILE_PREFIX = '${ここにファイル名のプレフィックスを入れる}';
 
 // === For send to slack ===
-var POSTURL = '${ここに Slack 通知のための POST URL を入れる}';
-var MESSAGE = '${ここに Slack に通知するメッセージを入れる}';
+const POSTURL = '${ここに Slack 通知のための POST URL を入れる}';
+const MESSAGE = '${ここに Slack に通知するメッセージを入れる}';
 // === For send to slack ===
 
-function myFunction() {
-  var date = new Date();
+function myFunction(): void {
+  const date = new Date();
   if (!isEvenWeeksFriday(date)) {
     return;
   }
   createNextReport(date);
 }
 
-function myNotify() {
-  var date = new Date();
+function myNotify(): void {
+  const date = new Date();
   if (!isEvenWeeksFriday(date)) {
     return;
   }
   sendToSlack();
 }
 
-function createNextReport(date) {
+function createNextReport(date: Date): void {
   do {
     date.setDate(date.getDate() + 7);
   } while (!isEvenWeeksFriday(date));
@@ -31,40 +31,40 @@ function createNextReport(date) {
   copyByFileId(TEMPLATE_FILE_ID, fileName);
 }
 
-function copyByFileId(id, copyName) {
+function copyByFileId(id: string, copyName: string): void {
   const file = DriveApp.getFileById(id);
   file.makeCopy(copyName);
 }
 
-function isEvenWeeksFriday(date) {
+function isEvenWeeksFriday(date: Date): boolean {
   const day = date.getDate();
   const weekNumber = Math.floor((day - 1) / 7) + 1;
   const dayOfWeek = date.getDay();
   return dayOfWeek === 5 && weekNumber % 2 === 0;
 }
 
-function formatDate(date, format) {
+function formatDate(date: Date, format: string): string {
   format = format || 'YYYY/MM/DD';
-  format = format.replace(/YYYY/g, date.getFullYear());
+  format = format.replace(/YYYY/g, date.getFullYear().toString());
   format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
   format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
   return format;
 }
 
-function sendToSlack() {
-  var username = 'slackbot';
-  var icon = ':hatching_chick:';
-  var jsonData = {
-     "username" : username,
-     "icon_emoji": icon,
-     "text" : MESSAGE
+function sendToSlack(): void {
+  const username = 'slackbot';
+  const icon = ':hatching_chick:';
+  const jsonData = {
+    username: username,
+    icon_emoji: icon,
+    text: MESSAGE
   };
-  var payload = JSON.stringify(jsonData);
+  const payload = JSON.stringify(jsonData);
 
-  var options = {
-    "method" : "post",
-    "contentType" : "application/json",
-    "payload" : payload
+  const options: any = {
+    method: 'post',
+    contentType: 'application/json',
+    payload: payload
   };
 
   UrlFetchApp.fetch(POSTURL, options);
