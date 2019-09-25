@@ -2,12 +2,25 @@ var DAY_OF_WEEK_STR = ['日', '月', '火', '水', '木', '金', '土'];
 var TEMPLATE_FILE_ID = '${ここにコピー元ファイルIDを入れる}';
 var FILE_PREFIX = '${ここにファイル名のプレフィックスを入れる}';
 
+// === For send to slack ===
+var POSTURL = '${ここに Slack 通知のための POST URL を入れる}';
+var MESSAGE = '${ここに Slack に通知するメッセージを入れる}';
+// === For send to slack ===
+
 function myFunction() {
   var date = new Date();
   if (!isEvenWeeksFriday(date)) {
     return;
   }
   createNextReport(date);
+}
+
+function myNotify() {
+  var date = new Date();
+  if (!isEvenWeeksFriday(date)) {
+    return;
+  }
+  sendToSlack();
 }
 
 function createNextReport(date) {
@@ -36,4 +49,23 @@ function formatDate(date, format) {
   format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
   format = format.replace(/DD/g, ('0' + date.getDate()).slice(-2));
   return format;
+}
+
+function sendToSlack() {
+  var username = 'slackbot';
+  var icon = ':hatching_chick:';
+  var jsonData = {
+     "username" : username,
+     "icon_emoji": icon,
+     "text" : MESSAGE
+  };
+  var payload = JSON.stringify(jsonData);
+
+  var options = {
+    "method" : "post",
+    "contentType" : "application/json",
+    "payload" : payload
+  };
+
+  UrlFetchApp.fetch(POSTURL, options);
 }
