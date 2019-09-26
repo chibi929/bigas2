@@ -1,11 +1,4 @@
-const DAY_OF_WEEK_STR = ['日', '月', '火', '水', '木', '金', '土'];
-const TEMPLATE_FILE_ID = '${ここにコピー元ファイルIDを入れる}';
-const FILE_PREFIX = '${ここにファイル名のプレフィックスを入れる}';
-
-// === For send to slack ===
-const POSTURL = '${ここに Slack 通知のための POST URL を入れる}';
-const MESSAGE = '${ここに Slack に通知するメッセージを入れる}';
-// === For send to slack ===
+import { Const } from './const';
 
 function myFunction(): void {
   const date = new Date();
@@ -27,8 +20,8 @@ function createNextReport(date: Date): void {
   do {
     date.setDate(date.getDate() + 7);
   } while (!isEvenWeeksFriday(date));
-  const fileName = FILE_PREFIX + '_' + formatDate(date, 'YYYYMMDD');
-  copyByFileId(TEMPLATE_FILE_ID, fileName);
+  const fileName = Const.FILE_PREFIX + '_' + formatDate(date, 'YYYYMMDD');
+  copyByFileId(Const.TEMPLATE_FILE_ID, fileName);
 }
 
 function copyByFileId(id: string, copyName: string): void {
@@ -57,7 +50,7 @@ function sendToSlack(): void {
   const jsonData = {
     username: username,
     icon_emoji: icon,
-    text: MESSAGE
+    text: Const.POST_MESSAGE
   };
   const payload = JSON.stringify(jsonData);
 
@@ -67,5 +60,5 @@ function sendToSlack(): void {
     payload: payload
   };
 
-  UrlFetchApp.fetch(POSTURL, options);
+  UrlFetchApp.fetch(Const.POST_URL, options);
 }
