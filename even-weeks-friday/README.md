@@ -44,6 +44,15 @@ GAS で偶数週(第2, 第4)の金曜日にごにょごにょ
     $ clasp push
     ```
 
+## 設定(src/const.ts)
+
+| 定数名 | 説明 |
+|:----|:----|
+| TEMPLATE_FILE_ID | GoogleDrive にあるコピー元ファイルID |
+| FILE_PREFIX | コピー先の prefix |
+| POST_URL | Slack 通知のための Webhook URL |
+| POST_MESSAGE | 任意のメッセージ |
+
 ## Other
 
 - メール投げたり
