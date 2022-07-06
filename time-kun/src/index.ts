@@ -5,17 +5,23 @@ import { Const } from './const'
  */
 function myFunction(): void {
   const copiedFrom = PropertiesService.getScriptProperties().getProperty('COPIED_FROM')
-  const filePrefix = PropertiesService.getScriptProperties().getProperty('FILE_PREFIX')
   const fileSuffix = PropertiesService.getScriptProperties().getProperty('FILE_SUFFIX')
   const fileName = `${Const.YYYY}年${Const.M}月`
 
-  const copiedFileId = copyByFileId(copiedFrom, `${filePrefix}${fileName}${fileSuffix}`)
+  const copiedFileId = copyByFileId(copiedFrom, `${fileName}${fileSuffix}`)
   updateSpreadSheet(copiedFileId)
 }
 
-function copyByFileId(id: string, fileName: string): string {
+function copyByFileId(id: string, newFileName: string): string {
   const file = DriveApp.getFileById(id)
-  const copiedFile = file.makeCopy(fileName)
+
+  // プリフィックスを抽出
+  const fileName = file.getName()
+  const group = fileName.match(/^(【.*】).*/)
+  const filePrefix = (group && group[1]) ?? ''
+
+  // 新しい名前でファイルのコピーを作成する
+  const copiedFile = file.makeCopy(`${filePrefix}${newFileName}`)
   return copiedFile.getId()
 }
 
