@@ -5,23 +5,26 @@ import { Const } from './const'
  */
 function myFunction(): void {
   const copiedFrom = PropertiesService.getScriptProperties().getProperty('COPIED_FROM')
-  const fileSuffix = PropertiesService.getScriptProperties().getProperty('FILE_SUFFIX')
-  const fileName = `${Const.YYYY}年${Const.M}月`
+  const fileSuffix = PropertiesService.getScriptProperties().getProperty('FILE_SUFFIX') || ''
+  const fileHeadSuffixes = PropertiesService.getScriptProperties().getProperty('FILE_HEAD_SUFFIXES') || ''
 
-  const copiedFileId = copyByFileId(copiedFrom, `${fileName}${fileSuffix}`)
-  updateSpreadSheet(copiedFileId)
+  const fileName = `${Const.YYYY}年${Const.M}月${fileSuffix}`
+  fileHeadSuffixes?.split(',').forEach((fileHeadSuffix) => {
+    const copiedFileId = copyByFileId(copiedFrom!, fileHeadSuffix, fileName)
+    updateSpreadSheet(copiedFileId)
+  })
 }
 
-function copyByFileId(id: string, newFileName: string): string {
+function copyByFileId(id: string, fileHeadSuffix: string, newFileName: string): string {
   const file = DriveApp.getFileById(id)
 
   // プリフィックスを抽出
   const fileName = file.getName()
-  const group = fileName.match(/^(【.*】).*/)
-  const filePrefix = (group && group[1]) ?? ''
+  const group = fileName.match(/^【(.*)】.*/)
+  const fileHeadPrefix = (group && group[1]) ?? ''
 
   // 新しい名前でファイルのコピーを作成する
-  const copiedFile = file.makeCopy(`${filePrefix}${newFileName}`)
+  const copiedFile = file.makeCopy(`【${fileHeadPrefix}_${fileHeadSuffix}】${newFileName}`)
   return copiedFile.getId()
 }
 
