@@ -42,8 +42,7 @@ function updateSpreadSheet(id: string): void {
     sheet.getRange('C3').setValue(Const.M)
 
     // 特別チェックを実施する行たち
-    const checkRowNumbers = [38, 37, 36]
-    checkRowNumbers.forEach((rowNum) => {
+    Const.END_OF_MONTH_ROWS.forEach((rowNum) => {
       const date = sheet.getRange(`A${rowNum}`).getValue()
       const d = Utilities.formatDate(new Date(date), 'JST', 'd')
       if (d.length === 1) {
